@@ -31,57 +31,37 @@ class _LineupBuilderScreenState extends State<LineupBuilderScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, _) => [
-          SliverAppBar(
-            pinned: true,
-            expandedHeight: 100,
-            backgroundColor: AppColors.green,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF6A1B9A), Color(0xFF8E24AA), Color(0xFFAB47BC)],
-                  ),
-                ),
-                padding: const EdgeInsets.fromLTRB(20, 50, 20, 14),
-                child: const Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text('📋', style: TextStyle(fontSize: 28)),
-                    SizedBox(width: 12),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Lineups', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w800)),
-                        Text('Build and manage your lineups', style: TextStyle(color: Colors.white70, fontSize: 12)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              titlePadding: const EdgeInsets.only(left: 56, bottom: 14),
-              title: const Text('Lineups', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17)),
-            ),
-            bottom: TabBar(
-              controller: _tabs,
-              tabs: const [
-                Tab(text: 'Saved', icon: Icon(Icons.list_rounded, size: 18)),
-                Tab(text: 'Build New', icon: Icon(Icons.add_circle_rounded, size: 18)),
-              ],
+      appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF6A1B9A), Color(0xFF8E24AA), Color(0xFFAB47BC)],
             ),
           ),
-        ],
-        body: TabBarView(
-          controller: _tabs,
-          children: const [
-            _SavedLineupsTab(),
-            _BuildLineupTab(),
+        ),
+        title: const Row(
+          children: [
+            Text('📋', style: TextStyle(fontSize: 20)),
+            SizedBox(width: 8),
+            Text('Lineups', style: TextStyle(fontWeight: FontWeight.w700)),
           ],
         ),
+        bottom: TabBar(
+          controller: _tabs,
+          tabs: const [
+            Tab(text: 'Saved', icon: Icon(Icons.list_rounded, size: 18)),
+            Tab(text: 'Build New', icon: Icon(Icons.add_circle_rounded, size: 18)),
+          ],
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabs,
+        children: const [
+          _SavedLineupsTab(),
+          _BuildLineupTab(),
+        ],
       ),
     );
   }

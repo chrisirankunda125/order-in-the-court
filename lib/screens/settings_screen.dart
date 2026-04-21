@@ -25,21 +25,27 @@ class SettingsScreen extends StatelessWidget {
                     colors: [Color(0xFF37474F), Color(0xFF546E7A), Color(0xFF607D8B)],
                   ),
                 ),
-                padding: const EdgeInsets.fromLTRB(20, 50, 20, 14),
-                child: const Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text('⚙️', style: TextStyle(fontSize: 28)),
-                    SizedBox(width: 12),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 14),
+                    child: const Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text('Settings', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w800)),
-                        Text('App preferences and options', style: TextStyle(color: Colors.white70, fontSize: 12)),
+                        Text('⚙️', style: TextStyle(fontSize: 24)),
+                        SizedBox(width: 10),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Settings', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800)),
+                            Text('Preferences & options', style: TextStyle(color: Colors.white70, fontSize: 11)),
+                          ],
+                        ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
               ),
               titlePadding: const EdgeInsets.only(left: 56, bottom: 14),

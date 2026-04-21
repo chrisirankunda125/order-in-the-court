@@ -32,72 +32,52 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
     final state = context.watch<AppState>();
 
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, _) => [
-          SliverAppBar(
-            pinned: true,
-            backgroundColor: AppColors.green,
-            expandedHeight: 100,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFFE64A19), Color(0xFFFF6B35), Color(0xFFFF8A50)],
-                  ),
-                ),
-                padding: const EdgeInsets.fromLTRB(20, 50, 20, 14),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    const Text('🏐', style: TextStyle(fontSize: 28)),
-                    const SizedBox(width: 12),
-                    const Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Game Screen', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w800)),
-                        Text('Live match tracking', style: TextStyle(color: Colors.white70, fontSize: 12)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              titlePadding: const EdgeInsets.only(left: 56, bottom: 14),
-              title: const Text('Game', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17)),
+      appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFFE64A19), Color(0xFFFF6B35), Color(0xFFFF8A50)],
             ),
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: TextButton.icon(
-                  onPressed: () => _confirmEndSet(context, state),
-                  icon: const Icon(Icons.refresh_rounded, color: Colors.white, size: 18),
-                  label: const Text('End Set', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13)),
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.white.withValues(alpha: 0.15),
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                ),
+          ),
+        ),
+        title: const Row(
+          children: [
+            Text('🏐', style: TextStyle(fontSize: 20)),
+            SizedBox(width: 8),
+            Text('Game Screen', style: TextStyle(fontWeight: FontWeight.w700)),
+          ],
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: TextButton.icon(
+              onPressed: () => _confirmEndSet(context, state),
+              icon: const Icon(Icons.refresh_rounded, color: Colors.white, size: 18),
+              label: const Text('End Set', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13)),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.white.withValues(alpha: 0.15),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               ),
-            ],
-            bottom: TabBar(
-              controller: _tabs,
-              tabs: const [
-                Tab(text: 'Live Game', icon: Icon(Icons.sports_volleyball, size: 18)),
-                Tab(text: 'Stats', icon: Icon(Icons.bar_chart_rounded, size: 18)),
-              ],
             ),
           ),
         ],
-        body: TabBarView(
+        bottom: TabBar(
           controller: _tabs,
-          children: [
-            _LiveGameTab(state: state),
-            _StatsTab(state: state),
+          tabs: const [
+            Tab(text: 'Live Game', icon: Icon(Icons.sports_volleyball, size: 18)),
+            Tab(text: 'Stats', icon: Icon(Icons.bar_chart_rounded, size: 18)),
           ],
         ),
+      ),
+      body: TabBarView(
+        controller: _tabs,
+        children: [
+          _LiveGameTab(state: state),
+          _StatsTab(state: state),
+        ],
       ),
     );
   }

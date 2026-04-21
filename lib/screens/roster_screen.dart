@@ -59,21 +59,27 @@ class _RosterAppBar extends StatelessWidget {
               colors: [Color(0xFF1565C0), Color(0xFF1976D2), Color(0xFF42A5F5)],
             ),
           ),
-          padding: const EdgeInsets.fromLTRB(20, 50, 20, 14),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              const Text('👥', style: TextStyle(fontSize: 28)),
-              const SizedBox(width: 12),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 14),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('Team Roster', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w800)),
-                  Text('$playerCount players on the team', style: const TextStyle(color: Colors.white70, fontSize: 12)),
+                  const Text('👥', style: TextStyle(fontSize: 24)),
+                  const SizedBox(width: 10),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Team Roster', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800)),
+                      Text('$playerCount players', style: const TextStyle(color: Colors.white70, fontSize: 11)),
+                    ],
+                  ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
         titlePadding: const EdgeInsets.only(left: 56, bottom: 14),
