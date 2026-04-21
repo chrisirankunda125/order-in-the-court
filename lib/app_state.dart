@@ -1,4 +1,8 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:uuid/uuid.dart';
 import 'models/player.dart';
 import 'models/lineup.dart';
@@ -11,7 +15,7 @@ class GameState {
   int homeTimeouts;
   int awayTimeouts;
   Lineup? activeLineup;
-  List<Player> courtPlayers; // ordered by current rotation position 1–6
+  List<Player> courtPlayers;
 
   GameState({
     this.homeScore = 0,
@@ -34,99 +38,183 @@ class GameState {
 }
 
 class AppState extends ChangeNotifier {
-  bool _isLoggedIn = false;
+  final _auth = FirebaseAuth.instance;
+  final _db = FirebaseFirestore.instance;
+  final _googleSignIn = GoogleSignIn();
+
+  User? _firebaseUser;
   String _userName = 'Coach';
+  bool _loading = false;
+  String? _authError;
 
   final List<Player> _players = [];
   final List<Lineup> _lineups = [];
   final GameState game = GameState();
 
-  bool get isLoggedIn => _isLoggedIn;
+  StreamSubscription<QuerySnapshot>? _playersSub;
+  StreamSubscription<QuerySnapshot>? _lineupsSub;
+
+  bool get isLoggedIn => _firebaseUser != null;
   String get userName => _userName;
+  bool get loading => _loading;
+  String? get authError => _authError;
   List<Player> get players => List.unmodifiable(_players);
   List<Lineup> get lineups => List.unmodifiable(_lineups);
 
   AppState() {
-    _seedData();
-  }
-
-  void _seedData() {
-    final danny = Player(id: _uuid.v4(), name: 'Danny', position: PlayerPosition.setter, jerseyNumber: 7);
-    final sophie = Player(id: _uuid.v4(), name: 'Sophie', position: PlayerPosition.middleBlocker, jerseyNumber: 16);
-    final grace = Player(id: _uuid.v4(), name: 'Grace', position: PlayerPosition.outside, jerseyNumber: 3);
-    final lauren = Player(id: _uuid.v4(), name: 'Lauren', position: PlayerPosition.libero, jerseyNumber: 5);
-    final mia = Player(id: _uuid.v4(), name: 'Mia', position: PlayerPosition.opposite, jerseyNumber: 10);
-    final jade = Player(id: _uuid.v4(), name: 'Jade', position: PlayerPosition.outside, jerseyNumber: 22);
-
-    _players.addAll([danny, sophie, grace, lauren, mia, jade]);
-
-    final lineup2 = Lineup(
-      id: _uuid.v4(),
-      title: 'Starting Lineup',
-      slots: [
-        LineupSlot(player: mia, courtPosition: 1),
-        LineupSlot(player: danny, courtPosition: 2),
-        LineupSlot(player: grace, courtPosition: 3),
-        LineupSlot(player: lauren, courtPosition: 4),
-        LineupSlot(player: jade, courtPosition: 5),
-        LineupSlot(player: sophie, courtPosition: 6),
-      ],
-    );
-    _lineups.add(lineup2);
-  }
-
-  // Auth
-  void login(String name) {
-    _isLoggedIn = true;
-    _userName = name.isNotEmpty ? name : 'Coach';
-    notifyListeners();
-  }
-
-  void logout() {
-    _isLoggedIn = false;
-    notifyListeners();
-  }
-
-  // Roster
-  void addPlayer(String name, String position, int jerseyNumber) {
-    _players.add(Player(
-      id: _uuid.v4(),
-      name: name,
-      position: position,
-      jerseyNumber: jerseyNumber,
-    ));
-    notifyListeners();
-  }
-
-  void updatePlayer(String id, String name, String position, int jerseyNumber) {
-    final index = _players.indexWhere((p) => p.id == id);
-    if (index != -1) {
-      _players[index] = _players[index].copyWith(
-        name: name,
-        position: position,
-        jerseyNumber: jerseyNumber,
-      );
+    _auth.authStateChanges().listen((user) {
+      _firebaseUser = user;
+      if (user != null) {
+        _userName = user.displayName ?? user.email?.split('@').first ?? 'Coach';
+        _subscribeToData();
+      } else {
+        _cancelSubscriptions();
+        _players.clear();
+        _lineups.clear();
+      }
       notifyListeners();
+    });
+  }
+
+  // ─── Firestore paths ────────────────────────────────────────────────────────
+
+  CollectionReference get _playersRef =>
+      _db.collection('users').doc(_firebaseUser!.uid).collection('players');
+
+  CollectionReference get _lineupsRef =>
+      _db.collection('users').doc(_firebaseUser!.uid).collection('lineups');
+
+  // ─── Realtime listeners ─────────────────────────────────────────────────────
+
+  void _subscribeToData() {
+    _playersSub = _playersRef
+        .orderBy('name')
+        .snapshots()
+        .listen((snap) {
+      _players.clear();
+      for (final doc in snap.docs) {
+        _players.add(Player.fromMap(doc.id, doc.data() as Map<String, dynamic>));
+      }
+      notifyListeners();
+    });
+
+    _lineupsSub = _lineupsRef
+        .orderBy('title')
+        .snapshots()
+        .listen((snap) {
+      _lineups.clear();
+      for (final doc in snap.docs) {
+        _lineups.add(Lineup.fromMap(doc.id, doc.data() as Map<String, dynamic>));
+      }
+      notifyListeners();
+    });
+  }
+
+  void _cancelSubscriptions() {
+    _playersSub?.cancel();
+    _lineupsSub?.cancel();
+    _playersSub = null;
+    _lineupsSub = null;
+  }
+
+  // ─── Auth ────────────────────────────────────────────────────────────────────
+
+  Future<void> signInWithEmail(String email, String password) async {
+    _setLoading(true);
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      _authError = null;
+    } on FirebaseAuthException catch (e) {
+      _authError = _friendlyAuthError(e.code);
+    } finally {
+      _setLoading(false);
     }
   }
 
-  void deletePlayer(String id) {
-    _players.removeWhere((p) => p.id == id);
-    notifyListeners();
+  Future<void> createAccount(String name, String email, String password) async {
+    _setLoading(true);
+    try {
+      final cred = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      await cred.user?.updateDisplayName(name.isNotEmpty ? name : 'Coach');
+      _authError = null;
+    } on FirebaseAuthException catch (e) {
+      _authError = _friendlyAuthError(e.code);
+    } finally {
+      _setLoading(false);
+    }
   }
 
-  // Lineups
-  void saveLineup(String title, List<LineupSlot> slots) {
-    _lineups.add(Lineup(id: _uuid.v4(), title: title, slots: slots));
-    notifyListeners();
+  Future<void> signInWithGoogle() async {
+    _setLoading(true);
+    try {
+      final googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) { _setLoading(false); return; }
+      final googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      await _auth.signInWithCredential(credential);
+      _authError = null;
+    } on FirebaseAuthException catch (e) {
+      _authError = _friendlyAuthError(e.code);
+    } catch (_) {
+      _authError = 'Google sign-in failed. Try email instead.';
+    } finally {
+      _setLoading(false);
+    }
   }
 
-  void deleteLineup(String id) {
-    _lineups.removeWhere((l) => l.id == id);
-    notifyListeners();
+  Future<void> logout() async {
+    await _googleSignIn.signOut();
+    await _auth.signOut();
   }
 
-  // Game
+  String _friendlyAuthError(String code) {
+    switch (code) {
+      case 'user-not-found': return 'No account found with that email.';
+      case 'wrong-password': return 'Incorrect password.';
+      case 'email-already-in-use': return 'An account already exists with this email.';
+      case 'weak-password': return 'Password must be at least 6 characters.';
+      case 'invalid-email': return 'Please enter a valid email address.';
+      default: return 'Authentication failed. Please try again.';
+    }
+  }
+
+  void _setLoading(bool v) { _loading = v; notifyListeners(); }
+
+  // ─── Roster ──────────────────────────────────────────────────────────────────
+
+  Future<void> addPlayer(String name, String position, int jerseyNumber) async {
+    final id = _uuid.v4();
+    await _playersRef.doc(id).set(
+      Player(id: id, name: name, position: position, jerseyNumber: jerseyNumber).toMap(),
+    );
+  }
+
+  Future<void> updatePlayer(
+      String id, String name, String position, int jerseyNumber) async {
+    await _playersRef.doc(id).update({'name': name, 'position': position, 'jerseyNumber': jerseyNumber});
+  }
+
+  Future<void> deletePlayer(String id) async {
+    await _playersRef.doc(id).delete();
+  }
+
+  // ─── Lineups ─────────────────────────────────────────────────────────────────
+
+  Future<void> saveLineup(String title, List<LineupSlot> slots) async {
+    final id = _uuid.v4();
+    await _lineupsRef.doc(id).set(Lineup(id: id, title: title, slots: slots).toMap());
+  }
+
+  Future<void> deleteLineup(String id) async {
+    await _lineupsRef.doc(id).delete();
+  }
+
+  // ─── Game (in-memory — resets each set by design) ────────────────────────────
+
   void setActiveLineup(Lineup lineup) {
     game.activeLineup = lineup;
     game.courtPlayers = lineup.sortedSlots.map((s) => s.player).toList();
@@ -144,11 +232,8 @@ class AppState extends ChangeNotifier {
   }
 
   void useTimeout(bool isHome) {
-    if (isHome && game.homeTimeouts > 0) {
-      game.homeTimeouts--;
-    } else if (!isHome && game.awayTimeouts > 0) {
-      game.awayTimeouts--;
-    }
+    if (isHome && game.homeTimeouts > 0) game.homeTimeouts--;
+    if (!isHome && game.awayTimeouts > 0) game.awayTimeouts--;
     notifyListeners();
   }
 
@@ -171,31 +256,36 @@ class AppState extends ChangeNotifier {
   void changeStat(Player player, String stat, int delta) {
     final p = _players.firstWhere((pl) => pl.id == player.id, orElse: () => player);
     switch (stat) {
-      case 'kills':
-        p.stats.kills = (p.stats.kills + delta).clamp(0, 999);
-      case 'digs':
-        p.stats.digs = (p.stats.digs + delta).clamp(0, 999);
-      case 'aces':
-        p.stats.aces = (p.stats.aces + delta).clamp(0, 999);
-      case 'errors':
-        p.stats.errors = (p.stats.errors + delta).clamp(0, 999);
+      case 'kills': p.stats.kills = (p.stats.kills + delta).clamp(0, 999);
+      case 'digs': p.stats.digs = (p.stats.digs + delta).clamp(0, 999);
+      case 'aces': p.stats.aces = (p.stats.aces + delta).clamp(0, 999);
+      case 'errors': p.stats.errors = (p.stats.errors + delta).clamp(0, 999);
     }
     notifyListeners();
   }
 
   void endSet() {
     game.reset();
-    for (final p in _players) {
-      p.stats.reset();
-    }
+    for (final p in _players) { p.stats.reset(); }
     notifyListeners();
   }
 
-  void resetAll() {
-    _players.clear();
-    _lineups.clear();
+  // ─── Settings ────────────────────────────────────────────────────────────────
+
+  Future<void> resetAllData() async {
+    final batch = _db.batch();
+    final players = await _playersRef.get();
+    final lineups = await _lineupsRef.get();
+    for (final doc in players.docs) { batch.delete(doc.reference); }
+    for (final doc in lineups.docs) { batch.delete(doc.reference); }
+    await batch.commit();
     game.reset();
-    _seedData();
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _cancelSubscriptions();
+    super.dispose();
   }
 }

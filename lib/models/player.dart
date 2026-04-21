@@ -23,12 +23,7 @@ class PlayerStats {
     errors = 0;
   }
 
-  PlayerStats copy() => PlayerStats(
-    kills: kills,
-    digs: digs,
-    aces: aces,
-    errors: errors,
-  );
+  PlayerStats copy() => PlayerStats(kills: kills, digs: digs, aces: aces, errors: errors);
 }
 
 class Player {
@@ -55,4 +50,17 @@ class Player {
       stats: stats.copy(),
     );
   }
+
+  Map<String, dynamic> toMap() => {
+    'name': name,
+    'position': position,
+    'jerseyNumber': jerseyNumber,
+  };
+
+  factory Player.fromMap(String id, Map<String, dynamic> map) => Player(
+    id: id,
+    name: map['name'] as String,
+    position: map['position'] as String,
+    jerseyNumber: (map['jerseyNumber'] as num).toInt(),
+  );
 }

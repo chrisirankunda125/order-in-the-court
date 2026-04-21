@@ -204,7 +204,7 @@ class SettingsScreen extends StatelessWidget {
       ),
     );
     if (confirmed == true) {
-      state.resetAll();
+      await state.resetAllData();
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('App data has been reset.'), behavior: SnackBarBehavior.floating),
@@ -213,9 +213,9 @@ class SettingsScreen extends StatelessWidget {
     }
   }
 
-  void _logout(BuildContext context, AppState state) {
-    state.logout();
-    Navigator.of(context).popUntil((route) => route.isFirst);
+  Future<void> _logout(BuildContext context, AppState state) async {
+    await state.logout();
+    if (context.mounted) Navigator.of(context).popUntil((route) => route.isFirst);
   }
 }
 
