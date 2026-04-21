@@ -40,7 +40,7 @@ class GameState {
 class AppState extends ChangeNotifier {
   final _auth = FirebaseAuth.instance;
   final _db = FirebaseFirestore.instance;
-  final _googleSignIn = GoogleSignIn();
+  GoogleSignIn? _googleSignIn;
 
   User? _firebaseUser;
   String _userName = 'Coach';
@@ -148,7 +148,8 @@ class AppState extends ChangeNotifier {
   Future<void> signInWithGoogle() async {
     _setLoading(true);
     try {
-      final googleUser = await _googleSignIn.signIn();
+      _googleSignIn ??= GoogleSignIn();
+      final googleUser = await _googleSignIn!.signIn();
       if (googleUser == null) { _setLoading(false); return; }
       final googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
@@ -167,7 +168,7 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    await _googleSignIn.signOut();
+    await _googleSignIn?.signOut();
     await _auth.signOut();
   }
 
