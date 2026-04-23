@@ -1,7 +1,3 @@
 #!/bin/bash
 set -e
-
-export EXPO_PUBLIC_SUPABASE_URL="https://bexprfkrvlsbiiiqgbey.supabase.co"
-export EXPO_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJleHByZmtydmxzYmlpaXFnYmV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5MDA1NDMsImV4cCI6MjA5MjQ3NjU0M30.Qnd2iIwaPn3mLZ8-yjQiLaIooISjUUaNGTOGBu36pYE"
-
 npx expo export --platform web
