@@ -1,5 +1,5 @@
 {
-  "buildCommand": "bash scripts/build.sh",
+  "buildCommand": "npm run build:web",
   "outputDirectory": "dist",
   "framework": null,
   "rewrites": [

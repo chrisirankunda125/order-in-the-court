@@ -147,7 +147,7 @@ function PlayingScreen() {
   const slotW = (screen.width - sp.xl * 2 - sp.md * 2) / 3
 
   return (
-    <View style={[s.darkFill, { paddingTop: insets.top + sp.md }]}>
+    <ScrollView style={s.darkBg} contentContainerStyle={[s.playingContent, { paddingTop: insets.top + sp.md, paddingBottom: insets.bottom + sp.lg }]} showsVerticalScrollIndicator={false}>
       {/* Top bar */}
       <View style={[s.topBar, { paddingHorizontal: sp.xl }]}>
         <TouchableOpacity onPress={handleEndGame}>
@@ -282,12 +282,12 @@ function PlayingScreen() {
       </View>
 
       {/* Bottom actions */}
-      <View style={[s.bottomBar, { paddingBottom: insets.bottom + sp.lg, paddingHorizontal: sp.xl }]}>
+      <View style={[s.bottomBar, { paddingHorizontal: sp.xl }]}>
         <TouchableOpacity style={s.endSetBtn} onPress={handleEndSet} disabled={flushing}>
           <Text style={s.endSetText}>{flushing ? 'Saving…' : `End Set ${setNumber}  →`}</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -314,6 +314,8 @@ export default function GameScreen() {
 // ── Styles ────────────────────────────────────────────────────
 const s = StyleSheet.create({
   darkFill: { flex: 1, backgroundColor: colors.bgDark },
+  darkBg: { flex: 1, backgroundColor: colors.bgDark },
+  playingContent: { paddingHorizontal: 0, gap: 0 },
 
   // Idle
   idleTitle: { ...t.h1, color: colors.textOnDark, marginBottom: sp.sm },
@@ -347,15 +349,15 @@ const s = StyleSheet.create({
   shareLink: { ...t.sm, color: colors.primary, fontWeight: '600' },
 
   // Scoreboard
-  scoreboard: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: sp.xxl, paddingVertical: sp.md },
+  scoreboard: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: sp.lg, paddingVertical: sp.sm },
   teamCol: { alignItems: 'center', gap: sp.xs },
-  teamLabel: { ...t.label, color: colors.textMutedDark, letterSpacing: 1.5 },
-  scoreNum: { fontSize: Math.min(72, screen.width * 0.17), fontWeight: '800', color: colors.textOnDark, lineHeight: Math.min(80, screen.width * 0.19) },
-  scoreBtnRow: { flexDirection: 'row', gap: sp.sm },
-  scoreBtn: { width: 44, height: 44, borderRadius: radius.md, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', ...shadow.sm },
-  scoreBtnPlus: { color: '#fff', fontSize: 26, fontWeight: '600', lineHeight: 30 },
-  scoreBtnMinus: { width: 44, height: 44, borderRadius: radius.md, backgroundColor: colors.bgDarkCard, borderWidth: 1, borderColor: colors.bgDarkBorder, justifyContent: 'center', alignItems: 'center' },
-  scoreBtnMinusText: { color: colors.textMutedDark, fontSize: 26, fontWeight: '600', lineHeight: 30 },
+  teamLabel: { ...t.label, color: colors.textMutedDark, letterSpacing: 1.5, fontSize: 10 },
+  scoreNum: { fontSize: 52, fontWeight: '800', color: colors.textOnDark, lineHeight: 56 },
+  scoreBtnRow: { flexDirection: 'row', gap: sp.xs },
+  scoreBtn: { width: 36, height: 36, borderRadius: radius.md, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', ...shadow.sm },
+  scoreBtnPlus: { color: '#fff', fontSize: 20, fontWeight: '600', lineHeight: 24 },
+  scoreBtnMinus: { width: 36, height: 36, borderRadius: radius.md, backgroundColor: colors.bgDarkCard, borderWidth: 1, borderColor: colors.bgDarkBorder, justifyContent: 'center', alignItems: 'center' },
+  scoreBtnMinusText: { color: colors.textMutedDark, fontSize: 20, fontWeight: '600', lineHeight: 24 },
   scoreSep: { alignItems: 'center', gap: sp.xs },
   sepLine: { width: 1, height: 20, backgroundColor: colors.bgDarkBorder },
   sepDash: { color: colors.bgDarkBorder, fontSize: 24, fontWeight: '300' },
@@ -378,8 +380,8 @@ const s = StyleSheet.create({
   courtEmpty: { color: 'rgba(255,255,255,0.15)', fontSize: 22 },
 
   // Stat area
-  statArea: { flex: 1, justifyContent: 'center' },
-  tapHint: { ...t.sm, color: colors.textMutedDark, textAlign: 'center' },
+  statArea: { paddingHorizontal: sp.xl, paddingVertical: sp.md, minHeight: 140 },
+  tapHint: { ...t.sm, color: colors.textMutedDark, textAlign: 'center', paddingVertical: sp.lg },
   statPanel: { backgroundColor: colors.bgDarkCard, borderRadius: radius.xl, padding: sp.lg, borderWidth: 1, borderColor: colors.bgDarkBorder },
   statPanelHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: sp.md },
   statPanelName: { ...t.h3, color: colors.textOnDark },
@@ -393,7 +395,7 @@ const s = StyleSheet.create({
   statBtnText: { ...t.label, color: '#fff' },
 
   // Bottom bar
-  bottomBar: { paddingTop: sp.md },
-  endSetBtn: { backgroundColor: '#065F46', borderRadius: radius.xl, padding: sp.lg, alignItems: 'center', ...shadow.md },
-  endSetText: { ...t.h3, color: '#fff' },
+  bottomBar: { paddingTop: sp.md, paddingHorizontal: sp.xl },
+  endSetBtn: { backgroundColor: '#065F46', borderRadius: radius.xl, padding: sp.md, alignItems: 'center', ...shadow.md },
+  endSetText: { ...t.h3, color: '#fff', fontSize: 14 },
 })

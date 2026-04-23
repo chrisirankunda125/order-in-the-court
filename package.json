@@ -11,7 +11,7 @@
     "build:dev": "eas build --profile development",
     "build:preview": "eas build --profile preview",
     "build:prod": "eas build --profile production",
-    "build:web": "npx expo export --platform web",
+    "build:web": "EXPO_PUBLIC_SUPABASE_URL='https://bexprfkrvlsbiiiqgbey.supabase.co' EXPO_PUBLIC_SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJleHByZmtydmxzYmlpaXFnYmV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5MDA1NDMsImV4cCI6MjA5MjQ3NjU0M30.Qnd2iIwaPn3mLZ8-yjQiLaIooISjUUaNGTOGBu36pYE' npx expo export --platform web",
     "submit:ios": "eas submit --platform ios",
     "submit:android": "eas submit --platform android"
   },
