@@ -40,7 +40,7 @@ function IntensityBar({ value }: { value: number }) {
 }
 const bar = StyleSheet.create({
   row: { flexDirection: 'row', gap: 3 },
-  seg: { flex: 1, height: 4, borderRadius: 2, backgroundColor: '#E2E8F0' },
+  seg: { flex: 1, height: 4, borderRadius: 2, backgroundColor: colors.border },
   segFilled: { backgroundColor: colors.primary },
 })
 

@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
   playerName: { ...t.h4, color: colors.text },
   playerPos: { ...t.sm, color: colors.textMuted },
   lastSessionBadge: { backgroundColor: colors.bg, borderRadius: radius.full, paddingHorizontal: sp.sm, paddingVertical: 2 },
-  lastSessionWarning: { backgroundColor: '#FEF3C7' },
+  lastSessionWarning: { backgroundColor: 'rgba(245, 158, 11, 0.15)' },
   lastSessionText: { ...t.xs, color: colors.textMuted, fontWeight: '600' },
 
   loadRow: { flexDirection: 'row', alignItems: 'center', gap: sp.md },

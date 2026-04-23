@@ -173,10 +173,10 @@ export default function RosterScreen() {
           <Text style={styles.modalTitle}>{editTarget ? 'Edit Player' : 'Add Player'}</Text>
 
           <Text style={styles.label}>Name *</Text>
-          <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="e.g. Jordan Smith" />
+          <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="e.g. Jordan Smith" placeholderTextColor={colors.textMuted} />
 
           <Text style={styles.label}>Jersey Number</Text>
-          <TextInput style={styles.input} value={jersey} onChangeText={setJersey} keyboardType="number-pad" placeholder="e.g. 7" />
+          <TextInput style={styles.input} value={jersey} onChangeText={setJersey} keyboardType="number-pad" placeholder="e.g. 7" placeholderTextColor={colors.textMuted} />
 
           <Text style={styles.label}>Position</Text>
           <View style={styles.chipRow}>

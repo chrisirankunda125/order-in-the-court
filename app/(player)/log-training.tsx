@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   typeGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: sp.sm },
   typeBtn: {
     width: '30.5%', borderRadius: radius.lg, padding: sp.md,
-    alignItems: 'center', borderWidth: 1.5, borderColor: '#E2E8F0',
+    alignItems: 'center', borderWidth: 1.5, borderColor: colors.border,
     backgroundColor: colors.bg, gap: sp.xs,
   },
   typeEmoji: { fontSize: 24 },
@@ -250,17 +250,17 @@ const styles = StyleSheet.create({
 
   durationRow: { flexDirection: 'row', alignItems: 'center', gap: sp.md, marginBottom: sp.md },
   durationInput: {
-    width: 100, borderWidth: 1.5, borderColor: '#E2E8F0',
+    width: 100, borderWidth: 1.5, borderColor: colors.border,
     borderRadius: radius.lg, paddingHorizontal: sp.lg, paddingVertical: sp.md,
     fontSize: 28, fontWeight: '800', color: colors.text, textAlign: 'center',
   },
   durationUnit: { ...t.h3, color: colors.textMuted },
   quickRow: { flexDirection: 'row', gap: sp.sm },
-  quickChip: { borderWidth: 1, borderColor: '#E2E8F0', borderRadius: radius.full, paddingHorizontal: sp.md, paddingVertical: sp.xs },
+  quickChip: { borderWidth: 1, borderColor: colors.border, borderRadius: radius.full, paddingHorizontal: sp.md, paddingVertical: sp.xs },
   quickChipText: { ...t.sm, color: colors.textSub },
 
   ratingRow: { flexDirection: 'row', gap: sp.sm },
-  ratingBtn: { flex: 1, height: 44, borderRadius: radius.md, borderWidth: 1.5, borderColor: '#E2E8F0', justifyContent: 'center', alignItems: 'center', backgroundColor: colors.bg },
+  ratingBtn: { flex: 1, height: 44, borderRadius: radius.md, borderWidth: 1.5, borderColor: colors.border, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.bg },
   ratingBtnActive: { backgroundColor: colors.primary, borderColor: colors.primary },
   ratingNum: { ...t.h4, color: colors.textMuted },
   ratingNumActive: { color: '#fff' },
@@ -269,12 +269,12 @@ const styles = StyleSheet.create({
   ratingLabelRight: { ...t.xs, color: colors.textMuted },
 
   notesInput: {
-    borderWidth: 1.5, borderColor: '#E2E8F0', borderRadius: radius.lg,
+    borderWidth: 1.5, borderColor: colors.border, borderRadius: radius.lg,
     padding: sp.md, ...t.body, color: colors.text, height: 100,
     textAlignVertical: 'top',
   },
   photoBtn: {
-    borderWidth: 1.5, borderColor: '#E2E8F0', borderRadius: radius.lg,
+    borderWidth: 1.5, borderColor: colors.border, borderRadius: radius.lg,
     borderStyle: 'dashed', padding: sp.xl, alignItems: 'center',
   },
   photoBtnText: { ...t.body, color: colors.textMuted },

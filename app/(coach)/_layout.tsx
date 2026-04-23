@@ -1,8 +1,20 @@
 import { Tabs } from 'expo-router'
+import { colors } from '../../lib/theme'
 
 export default function CoachLayout() {
   return (
-    <Tabs screenOptions={{ headerShown: false }}>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: {
+          backgroundColor: colors.bgCard,
+          borderTopColor: colors.border,
+          borderTopWidth: 1,
+        },
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textMuted,
+      }}
+    >
       <Tabs.Screen name="dashboard" options={{ title: 'Home' }} />
       <Tabs.Screen name="roster" options={{ title: 'Roster' }} />
       <Tabs.Screen name="lineups" options={{ title: 'Lineups' }} />

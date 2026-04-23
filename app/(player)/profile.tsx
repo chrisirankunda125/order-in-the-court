@@ -320,10 +320,10 @@ const styles = StyleSheet.create({
   fieldBorder: { borderBottomWidth: 1, borderBottomColor: colors.bg },
   fieldLabel: { ...t.label, color: colors.textMuted, width: 80 },
   fieldValue: { ...t.body, color: colors.text },
-  fieldInput: { ...t.body, color: colors.text, borderWidth: 1.5, borderColor: '#E2E8F0', borderRadius: radius.md, paddingHorizontal: sp.md, paddingVertical: sp.sm, backgroundColor: colors.bg },
+  fieldInput: { ...t.body, color: colors.text, borderWidth: 1.5, borderColor: colors.border, borderRadius: radius.md, paddingHorizontal: sp.md, paddingVertical: sp.sm, backgroundColor: colors.bg },
 
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: sp.xs, justifyContent: 'flex-end' },
-  chip: { borderWidth: 1, borderColor: '#E2E8F0', borderRadius: radius.full, paddingHorizontal: sp.md, paddingVertical: sp.xs },
+  chip: { borderWidth: 1, borderColor: colors.border, borderRadius: radius.full, paddingHorizontal: sp.md, paddingVertical: sp.xs },
   chipActive: { backgroundColor: colors.primaryLight, borderColor: colors.primary },
   chipText: { ...t.sm, color: colors.textSub },
   chipTextActive: { color: colors.primary, fontWeight: '700' },

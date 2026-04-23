@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react'
 import { Stack, useRouter, useSegments } from 'expo-router'
 import { Session } from '@supabase/supabase-js'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { StatusBar } from 'expo-status-bar'
+import { View } from 'react-native'
 import { supabase } from '../lib/supabase'
+import { colors } from '../lib/theme'
 
 export default function RootLayout() {
   const [session, setSession] = useState<Session | null>(null)
@@ -37,7 +40,10 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <Stack screenOptions={{ headerShown: false }} />
+      <View style={{ flex: 1, backgroundColor: colors.bg }}>
+        <StatusBar style="light" />
+        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }} />
+      </View>
     </SafeAreaProvider>
   )
 }

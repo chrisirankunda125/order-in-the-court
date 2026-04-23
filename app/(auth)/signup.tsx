@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   roleRow: { flexDirection: 'row', gap: sp.md, marginBottom: sp.xxl },
   roleCard: {
     flex: 1, backgroundColor: colors.bgCard, borderRadius: radius.xl,
-    padding: sp.lg, borderWidth: 1.5, borderColor: '#E2E8F0',
+    padding: sp.lg, borderWidth: 1.5, borderColor: colors.border,
     alignItems: 'flex-start', gap: sp.xs, position: 'relative', ...shadow.sm,
   },
   roleCardActive: { borderColor: colors.primary, backgroundColor: colors.primaryLight },
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bgCard,
     borderRadius: radius.lg,
     borderWidth: 1.5,
-    borderColor: '#E2E8F0',
+    borderColor: colors.border,
     paddingHorizontal: sp.lg,
     paddingVertical: sp.md + 2,
     ...t.body,
